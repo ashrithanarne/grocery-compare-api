@@ -1,0 +1,13 @@
+#python
+__pycache__/
+*.pyc
+
+#virtual environment
+venv/
+.env
+
+#SQLite database
+*.db
+
+#OS files
+.DS_Store
