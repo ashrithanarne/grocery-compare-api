@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 import uvicorn
-from fastapi import Body, Depends, FastAPI, HTTPException
+from fastapi import FastAPI
 #from typing import List 
 #from pydantic import BaseModel
 import schema

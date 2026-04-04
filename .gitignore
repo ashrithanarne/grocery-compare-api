@@ -10,4 +10,4 @@ venv/
 *.db
 
 #OS files
-.DS_Store
+.DS_Storegit pull origin main

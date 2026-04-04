@@ -23,6 +23,9 @@ class store_response(BaseModel):
     class Config:
         from_attributes = True
 
+class store_update_req(BaseModel):
+    name: Optional[str]=None
+
 # Store items schema
 class raw_item_req(BaseModel):
     store_id: int
@@ -43,6 +46,13 @@ class raw_item_res(BaseModel):
 
     class Config:
         from_attributes= True
+
+class raw_item_update_req(BaseModel):
+    store_id: Optional[int]= None
+    raw_name: Optional[str]= None
+    raw_brand: Optional[str]= None
+    raw_size: Optional[str]= None
+    raw_prize: Optional[int]= None
 
 """
 class cannonical_item(BaseModel):

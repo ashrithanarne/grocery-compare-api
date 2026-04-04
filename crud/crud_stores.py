@@ -22,6 +22,24 @@ def get_store(db:Session, id:int):
         return None
     return store
 
+def store_update(db: Session, id:int, st:schema.store_update_req):
+    store=db.query(Stores).filter(Stores.store_id==id).first()
+    if not store:
+        return None
+    
+    updates=st.model_dump(exclude_unset=True)
+    if "name" in updates:
+        updates["store_name"] = updates.pop("name")
+        
+    if not updates:
+        return "Empty update"
+    for key, value in updates.items():
+        setattr(store,key,value)
+
+    db.commit()
+    db.refresh(store)
+    return store
+
 def del_store(db:Session, id: int):
     store= db.query(Stores).filter(Stores.store_id == id).first()
     if not store:

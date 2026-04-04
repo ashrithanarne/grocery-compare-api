@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from crud.crud_stores import get_all_stores, add_store, get_store,del_store
+from crud.crud_stores import get_all_stores, add_store, get_store,del_store,store_update
 from database import get_db
 import schema
 from typing import List
@@ -20,6 +20,16 @@ def get_store_by_id(id: int, db: Session= Depends(get_db)):
     res= get_store(db,id)
     if not res:
         raise HTTPException(status_code=404, detail="Store not found")
+    return res
+
+@router.patch("/{id}", response_model=schema.store_response)
+def update_store_by_id(id:int, st:schema.store_update_req, db:Session=Depends(get_db)):
+    res=store_update(db,id,st)
+    if res is None:
+        raise HTTPException(status_code=404, detail="Store not found")
+    if res=="Empty update":
+        raise HTTPException(status_code=400, detail="No fields provided to update")
+
     return res
 
 @router.delete("/{id}")
