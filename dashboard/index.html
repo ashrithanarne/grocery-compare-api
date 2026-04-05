@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Grocery Compare Dashboard</title>
+</head>
+
+<body>
+
+<h1>Grocery Compare API</h1>
+
+<button onclick="loadStores()">Load Stores</button>
+
+<ul id="storeList"></ul>
+
+<script>
+
+async function loadStores() {
+
+  const response = await fetch("http://127.0.0.1:8000/stores/");
+  const stores = await response.json();
+
+  const list = document.getElementById("storeList");
+  list.innerHTML = "";
+
+  stores.forEach(store => {
+
+    const li = document.createElement("li");
+    li.textContent = store.store_name;
+
+    list.appendChild(li);
+  });
+
+}
+
+</script>
+
+</body>
+</html>
