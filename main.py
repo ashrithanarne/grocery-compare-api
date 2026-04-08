@@ -5,7 +5,7 @@ from fastapi import FastAPI
 #from pydantic import BaseModel
 from database import engine,SessionLocal
 from models import Base
-from routers import router_stores,router_items
+from routers import router_stores,router_items, router_cannonical_items
 from fastapi.middleware.cors import CORSMiddleware
 
 Base.metadata.create_all(bind=engine)
@@ -22,3 +22,4 @@ app.add_middleware(
 
 app.include_router(router_stores.router)
 app.include_router(router_items.router)
+app.include_router(router_cannonical_items.router)

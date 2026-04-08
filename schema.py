@@ -54,6 +54,23 @@ class raw_item_update_req(BaseModel):
     raw_size: Optional[str]= None
     raw_prize: Optional[int]= None
 
+#Cannonical items schema definitions
+class cannonical_req(BaseModel):
+    product_name: str
+    varient: str
+    size: int
+    size_unit: str
+
+class cannonical_res(BaseModel):
+    cannonical_id:int
+    product_name: str
+    varient: str
+    size: int
+    size_unit: str
+    
+    class Config:
+        from_attributes= True
+
 """
 class cannonical_item(BaseModel):
     c_id: int =Field()

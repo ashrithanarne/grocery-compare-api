@@ -19,7 +19,7 @@ def create_raw_item(st:schema.raw_item_req, db: Session = Depends(get_db)):
 def fetch_item_by_id(id:int, db:Session=Depends(get_db)):
     res=get_item_by_id(db,id)
     if not res:
-        raise HTTPException(status_code=404, detail="Item does not exist")
+        raise HTTPException(status_code=400, detail="Item does not exist")
     return res
 
 @router.patch("/{id}", response_model=schema.raw_item_res)
