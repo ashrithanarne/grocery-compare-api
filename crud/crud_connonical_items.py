@@ -14,3 +14,23 @@ def get_all_citems(db: Session):
 
 def fetch_citem_by_id(id: int, db: Session):
     return db.query(cannonical_item).filter(cannonical_item.cannonical_id==id).first()
+
+def update_citem(db: Session, id: int, st: schema.update_cannonical_req):
+    item=db.query(cannonical_item).filter(cannonical_item.cannonical_id==id).first()
+    if not item:
+        return None
+    update_data=st.model_dump(exclude_unset=True)
+    for key,value in update_data.items():
+        setattr(item,key,value)
+
+    db.commit()
+    db.refresh(item)
+    return item
+
+def delte_c_item(db: Session, id: int):
+    item=db.query(cannonical_item).filter(cannonical_item.cannonical_id==id).first()
+    if not item:
+        return None
+    db.delete(item)
+    db.commit()
+    return item

@@ -71,6 +71,12 @@ class cannonical_res(BaseModel):
     class Config:
         from_attributes= True
 
+class update_cannonical_req(BaseModel):
+    product_name: Optional[str]=None
+    varient: Optional[str]=None
+    size: Optional[int]=None
+    size_unit: Optional[str]=None
+
 """
 class cannonical_item(BaseModel):
     c_id: int =Field()
