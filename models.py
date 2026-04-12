@@ -18,9 +18,9 @@ class raw_store_table(Base):
     scrapped_at = Column(DateTime(timezone=True), server_default=func.now())
     matched= Column(Boolean, default=False)
 
-class cannonical_item(Base):
-    __tablename__="cannonical_item"
-    cannonical_id= Column(Integer, primary_key=True, autoincrement=True)
+class canonical_item(Base):
+    __tablename__="canonical_item"
+    canonical_id= Column(Integer, primary_key=True, autoincrement=True)
     product_name= Column(String, nullable=False)
     varient= Column(String)
     size= Column(Integer)
