@@ -10,6 +10,11 @@ def get_all_stores(db: Session):
     return db.query(Stores).all()
 
 def add_store(db: Session, st: schema.store_request):
+    exists= db.query(Stores).filter(Stores.store_name==st.name).first()
+    if exists:
+        print(f"Validation failed: User with name '{st.name}' already exists.")
+        return None
+    
     new_store=Stores(store_name= st.name)
     db.add(new_store)
     db.commit()
@@ -30,7 +35,7 @@ def store_update(db: Session, id:int, st:schema.store_update_req):
     updates=st.model_dump(exclude_unset=True)
     if "name" in updates:
         updates["store_name"] = updates.pop("name")
-        
+    print(f"DEBUG updates dict: {updates}")
     if not updates:
         return "Empty update"
     for key, value in updates.items():

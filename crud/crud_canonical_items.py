@@ -4,6 +4,9 @@ import schema
 
 def add_canonicalitem(db: Session,st: schema.canonical_req):
     new_entry=canonical_item(**st.model_dump())
+    existing=db.query(canonical_item).filter(canonical_item.product_name==st.product_name, canonical_item.varient==st.varient, canonical_item.size==st.size, canonical_item.size_unit==st.size_unit).first()
+    if existing:
+        return None
     db.add(new_entry)
     db.commit()
     db.refresh(new_entry)

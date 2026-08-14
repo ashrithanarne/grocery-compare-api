@@ -13,7 +13,10 @@ def get_stores(db: Session = Depends(get_db)):
 
 @router.post("/", response_model=schema.store_response)
 def create_store(st: schema.store_request, db: Session = Depends(get_db)):
-    return add_store(db,st)
+    res = add_store(db, st)
+    if not res:
+        raise HTTPException(status_code=409, detail="Store with this name already exists")
+    return res
 
 @router.get("/{id}", response_model=schema.store_response)
 def get_store_by_id(id: int, db: Session= Depends(get_db)):
@@ -37,5 +40,5 @@ def delete_store(id:int, db:Session =Depends(get_db)):
     res=del_store(db,id)
     if not res:
         raise HTTPException(status_code=404, detail="Store not found")
-    return {"message", f"Store with id {id} has been deleted"}
+    return {f"Store with id {id} has been deleted"}
 

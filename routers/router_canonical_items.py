@@ -2,14 +2,17 @@ from fastapi import APIRouter, Depends, HTTPException
 from database import get_db
 from sqlalchemy.orm import Session
 import schema
-from crud.crud_cononical_items import add_canonicalitem, get_all_citems, fetch_citem_by_id, update_citem,delte_c_item
+from crud.crud_canonical_items import add_canonicalitem, get_all_citems, fetch_citem_by_id, update_citem,delte_c_item
 from typing import List
 
 router=APIRouter(prefix="/canonical")
 
 @router.post("/", response_model=schema.canonical_res)
 def create_canonical_item(st:schema.canonical_req, db: Session=Depends(get_db)):
-    return add_canonicalitem(db,st)
+    res = add_canonicalitem(db,st)
+    if not res:
+        raise HTTPException(status_code=409, detail="Cannonical item with this description already exists")
+    return res
 
 @router.get("/",response_model=List[schema.canonical_res])
 def get_all_canpnical_items(db: Session =Depends(get_db)):
@@ -25,13 +28,13 @@ def get_citem_by_id(id: int, db: Session = Depends(get_db)):
 @router.patch("/{id}",response_model=schema.canonical_res)
 def update_canonical_item(st:schema.update_canonical_req,id: int, db: Session=Depends(get_db)):
     res=update_citem(db,id,st)
-    if not res:
-        return HTTPException(status_code=404, detail="Item not found")
+    if res is None:
+        raise HTTPException(status_code=404, detail="Item not found")
     return res
 
 @router.delete("/{id}")
 def delete_canonical_item(id:int, db: Session = Depends(get_db)):
     res=  delte_c_item(db,id)
     if not res:
-        return HTTPException(status_code=404, detail="Item not found")
+        raise HTTPException(status_code=404, detail="Item with given c_id not found")
     return {"message":f"Item with id {id} has been deleted"}

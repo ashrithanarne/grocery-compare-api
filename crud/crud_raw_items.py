@@ -1,5 +1,6 @@
+from fastapi import HTTPException
 from sqlalchemy.orm import Session
-from models import raw_store_table
+from models import raw_store_table,Stores
 import schema
 
 def get_all_items(db: Session):
@@ -12,16 +13,14 @@ def get_item_by_id(db: Session, id:int):
     return item
 
 def add_raw_item(db: Session, st:schema.raw_item_req):
-    try:
-
+        item=db.query(Stores).filter(Stores.store_id==st.store_id).first()
+        if not item:
+            return None
         new_item=raw_store_table(**st.model_dump())
         db.add(new_item)
         db.commit()
         db.refresh(new_item)
         return new_item
-    except Exception as e:
-        db.rollback()
-        raise e
 
 def update_raw_item(db:Session, id:int, st: schema.raw_item_update_req):
     item=db.query(raw_store_table).filter(raw_store_table.raw_id==id).first()
@@ -30,6 +29,12 @@ def update_raw_item(db:Session, id:int, st: schema.raw_item_update_req):
     #exclde_unset=True, makes it such that only the keys given by the user is updated , the rest remain unchanged
     #items() is a python dictionary method, and it returns key-value pairs
     update_data=st.model_dump(exclude_unset=True)
+
+    if "store_id" in update_data:
+        store=db.query(Stores).filter(Stores.store_id==st.store_id).first()
+        if not store:
+            return"Invalid store_id"
+
     for key,value in update_data.items():
         setattr(item,key,value)
     

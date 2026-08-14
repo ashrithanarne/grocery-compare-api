@@ -29,10 +29,10 @@ class store_update_req(BaseModel):
 # Store items schema
 class raw_item_req(BaseModel):
     store_id: int
-    raw_name: str
+    raw_name: str =Field(min_length=2, max_length=50)
     raw_brand: str
     raw_size: str
-    raw_price: int
+    raw_price: int= Field(gt=0)
 
 class raw_item_res(BaseModel):
     raw_id: int
@@ -41,8 +41,8 @@ class raw_item_res(BaseModel):
     raw_brand: str
     raw_size: str
     raw_price: int
-    scrapped_at: Optional[datetime]
-    matched: Optional[bool]
+    scrapped_at: datetime
+    matched: bool
 
     class Config:
         from_attributes= True
@@ -52,14 +52,14 @@ class raw_item_update_req(BaseModel):
     raw_name: Optional[str]= None
     raw_brand: Optional[str]= None
     raw_size: Optional[str]= None
-    raw_prize: Optional[int]= None
+    raw_price: Optional[int]= None
 
 #Canonical items schema definitions
 class canonical_req(BaseModel):
     product_name: str
-    varient: str
-    size: int
-    size_unit: str
+    varient: Optional[str]=None
+    size: Optional[int] = Field(default=None, gt=0)
+    size_unit: Optional[str]=None
 
 class canonical_res(BaseModel):
     canonical_id:int
@@ -77,38 +77,41 @@ class update_canonical_req(BaseModel):
     size: Optional[int]=None
     size_unit: Optional[str]=None
 
-"""
-class cannonical_item(BaseModel):
-    c_id: int =Field()
-    product_name: str
-    varient: str
-    size: int
-    size_unit: str
+#Store items table schema
 
-class store(BaseModel):
-    store_id: int
-    store_name: str
-
-class raw_store_item(BaseModel):
-    raw_store_id: int
-    store_id: int
-    raw_product_name: str
-    raw_brand_name: str
-    raw_size: str
-    raw_price: str
-    scrapped_at: time
-    matched: bool
-
-class store_item(BaseModel):
-    item_id: int
+class sitems_req(BaseModel):
     c_id: int
     store_id: int
-    brand: str
-    raw_name: str
+    raw_id: int
 
-class price_entry(BaseModel):
-    item_id: int
+class sitems_res(BaseModel):
+    si_id: int
+    c_id: int
+    store_id: int
+    raw_id: int
+
+class sitems_update_req(BaseModel):
+    c_id: Optional[int]=None
+    store_id: Optional[int]=None
+    raw_id: Optional[int]=None
+
+class match_req(BaseModel):
+    c_id: int
+
+class relink_req(BaseModel):
+    si_id: int
+
+#price_entry schema
+class price_res(BaseModel):
     price_id: int
-    price: float
-    time: timeStamp
-    """
+    si_id: int
+    price: int
+    timestamp: datetime
+
+class price_req(BaseModel):
+    si_id: int
+    price: int =Field(gt=0)
+
+class price_update(BaseModel):
+    si_id: Optional[int]=None
+    price: Optional[int] = Field(default=None, gt=0)
