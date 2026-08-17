@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 
 from database import SessionLocal
-from models import Stores
+from models import Stores, raw_store_table
 import schema
 
 
@@ -49,6 +49,10 @@ def del_store(db:Session, id: int):
     store= db.query(Stores).filter(Stores.store_id == id).first()
     if not store:
         return None
+
+    has_raw_items = db.query(raw_store_table).filter(raw_store_table.store_id == id).first()
+    if has_raw_items:
+        return "HAS_DEPENDENTS"
     
     db.delete(store)
     db.commit()

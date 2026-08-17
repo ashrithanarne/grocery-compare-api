@@ -38,6 +38,8 @@ def update_store_by_id(id:int, st:schema.store_update_req, db:Session=Depends(ge
 @router.delete("/{id}")
 def delete_store(id:int, db:Session =Depends(get_db)):
     res=del_store(db,id)
+    if res == "HAS_DEPENDENTS":
+        raise HTTPException(status_code=409, detail="Cannot delete: store still has raw items linked to it")
     if not res:
         raise HTTPException(status_code=404, detail="Store not found")
     return {f"Store with id {id} has been deleted"}

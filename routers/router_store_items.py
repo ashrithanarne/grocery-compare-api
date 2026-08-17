@@ -38,6 +38,8 @@ def update_sitem(id : int, st: schema.sitems_update_req, db: Session=Depends(get
 @router.delete("/{id}")
 def delete_sitem(id: int, db: Session=Depends(get_db)):
     res=delete_item(db,id)
+    if res=="HAS_DEPENDENTS":
+        raise HTTPException(status_code=409, detail="Cannot be deleted: Store item has price entry linked to it")
     if not res:
         raise HTTPException(status_code=404, detail="Store Item does not exist")
     return {"message": f"Store_item with id {id} has been deleted"}

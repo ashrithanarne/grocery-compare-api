@@ -50,6 +50,10 @@ def delete_item(db: Session,id:int):
     item=db.query(store_items_table).filter(store_items_table.si_id == id).first()
     if not item:
         return None
+
+    has_price_entry=db.query(price_entry).filter(price_entry.si_id==id).first()
+    if has_price_entry:
+        return "HAS_DEPENDENTS"
     db.delete(item)
     db.commit()
     return True

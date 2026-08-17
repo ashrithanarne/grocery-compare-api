@@ -35,6 +35,8 @@ def update_canonical_item(st:schema.update_canonical_req,id: int, db: Session=De
 @router.delete("/{id}")
 def delete_canonical_item(id:int, db: Session = Depends(get_db)):
     res=  delte_c_item(db,id)
+    if res=="HAS_DEPENDENTS":
+         raise HTTPException(status_code=409, detail="Cannot delete: canonical item still has store items linked to it")
     if not res:
         raise HTTPException(status_code=404, detail="Item with given c_id not found")
     return {"message":f"Item with id {id} has been deleted"}

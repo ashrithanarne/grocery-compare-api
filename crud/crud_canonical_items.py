@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from models import canonical_item
+from models import canonical_item,store_items_table
 import schema
 
 def add_canonicalitem(db: Session,st: schema.canonical_req):
@@ -34,6 +34,11 @@ def delte_c_item(db: Session, id:int):
     item=db.query(canonical_item).filter(canonical_item.canonical_id==id).first()
     if not item:
         return None
+
+    has_store_items=db.query(store_items_table).filter(store_items_table.c_id==id).first()
+    if has_store_items:
+        return "HAS_DEPENDENTS"
+    
     db.delete(item)
     db.commit()
     return item

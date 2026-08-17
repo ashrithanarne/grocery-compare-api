@@ -1,6 +1,6 @@
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
-from models import raw_store_table,Stores
+from models import raw_store_table,Stores, store_items_table
 import schema
 
 def get_all_items(db: Session):
@@ -46,6 +46,10 @@ def del_item_by_id(db:Session, id:int):
     item=db.query(raw_store_table).filter(raw_store_table.raw_id==id).first()
     if not item:
         return None
+
+    has_store_item=db.query(store_items_table).filter(store_items_table.raw_id==id).first()
+    if has_store_item:
+        return "HAS_DEPENDENTS"
     db.delete(item)
     db.commit()
     return item

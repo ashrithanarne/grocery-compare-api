@@ -16,6 +16,7 @@ def create_raw_item(st:schema.raw_item_req, db: Session = Depends(get_db)):
     res=add_raw_item(db,st)
     if not res:
         raise HTTPException(status_code=400, detail="store_id does not exist")
+    return res
 
 @router.get("/{id}", response_model=schema.raw_item_res)
 def fetch_item_by_id(id:int, db:Session=Depends(get_db)):
@@ -36,6 +37,8 @@ def update_item(id:int, st:schema.raw_item_update_req, db: Session=Depends(get_d
 @router.delete("/{id}")
 def delete_item_by_id(id:int, db:Session=Depends(get_db)):
     res=del_item_by_id(db,id)
+    if res=="HAS_DEPENDENTS":
+        raise HTTPException(status_code=409, detail="Cannot be deleted: Raw item has store item linked to it")
     if not res:
         raise HTTPException(status_code=404, detail="Item Not Found")
     return {"message": f"Item with id {id} has been deleted"}
